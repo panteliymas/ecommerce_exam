@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
+use App\Http\Managers\CartManager;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -12,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton('cart', function () {
+            return new CartManager();
+        });
+
     }
 
     /**

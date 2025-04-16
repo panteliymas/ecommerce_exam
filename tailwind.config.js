@@ -18,5 +18,10 @@ export default {
         },
     },
 
+    corePlugins: {
+        // ...other core plugins...
+        'utilities': true // This is crucial if you're using @layer utilities
+    },
+
     plugins: [forms],
 };

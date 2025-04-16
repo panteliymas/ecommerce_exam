@@ -16,7 +16,7 @@ class TestProductsSeeder extends Seeder
         \App\Models\Product::factory(10)->create([
             'name' => 'Test Product',
             'label' => 'Test Label',
-            'photo' => asset('storage/test.jpg'),
+            'photo' => 'storage/test.jpg',
             'price' => 9.99,
             'stock' => 100,
         ]);

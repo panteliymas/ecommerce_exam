@@ -1,63 +1,10 @@
-@import "@fortawesome/fontawesome-free/css/all.css";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 body {
     margin: 0;
     padding: 0;
 }
 
-header {
-    top: 0;
-    background-color: white;
-    padding-inline: 10px;
-    font-size: 1.5rem;
-    box-shadow: 0 1px 0 black;
-
-    nav {
-        gap: 20px;
-
-        & :is(a, a:visited, a:hover) {
-            color: black;
-            text-decoration: none;
-        }
-
-        & a {
-            /* transition: box-shadow 1s ease-in-out; */
-            text-transform: uppercase;
-            opacity: 0.75;
-            position: relative;
-            padding: 20px 0px;
-            margin: 0px 20px;
-        }
-
-        & a:hover {
-            /* box-shadow: inset 0 -1px 0 black; */
-            opacity: 1;
-        }
-
-        & a::before {
-            transition: 300ms;
-            height: 0%;
-            content: "";
-            position: absolute;
-            background-color: #031D44;
-            width: 100%;
-            bottom: 0px;
-            transform: translateY(50%);
-        }
-        
-        & a:hover::before {
-            height: 5px;
-        }
-
-        & a:not(:hover) {
-            box-shadow: inset 0 0 0 transparent;
-        }
-    }
-}
-
-.catalog {
-    gap: 1rem;
+input[type=text] {
+    padding-left: 10px;
 }

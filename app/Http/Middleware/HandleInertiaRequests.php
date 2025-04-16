@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
+use App\Http\Managers\CartManager;
+
 class HandleInertiaRequests extends Middleware
 {
     /**
@@ -34,6 +36,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'cart' => fn() => CartManager::getCartFromCache($request->ip()),
+            'asset' => asset(''),
         ];
     }
 }
