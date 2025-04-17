@@ -16,10 +16,10 @@ class Category extends Model
     /**
      * Get the category's products.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function products() : \Illuminate\Database\Eloquent\Relations\HasMany
+    public function products() : \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(ProductToCategory::class, 'category_id', 'id');
+        return $this->belongsToMany(Product::class, 'products_to_categories');
     }
 }

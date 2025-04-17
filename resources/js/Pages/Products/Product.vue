@@ -56,6 +56,10 @@ const addToCart = () => {
                 </button>
             </div>
             <p class="mt-3 text-sm/6 text-gray-600 text-end">In stock {{ props.product.stock }}</p>
+            <p class="mt-3 text-sm/6 text-gray-600 text-end">
+                <span class="font-medium bg-blue-500 px-2 py-1 text-white w-fit rounded-xl" 
+                    v-for="category in props.product.categories">{{ category.name }}</span>
+            </p>
         </div>
         
         

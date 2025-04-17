@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +10,7 @@ use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
 use App\Models\Product;
+use App\Models\Category;
 use App\Http\Managers\CartManager;
 
 class ProductsController extends Controller
@@ -21,11 +20,21 @@ class ProductsController extends Controller
      */
     public function catalog(Request $request): InertiaResponse
     {
-        $products = Product::where('status', 'active')->paginate(20);
+        $filter = $request->input('filter', []);
+
+        $products = Product::where('status', 'active')
+            ->withFilters($filter)
+            ->paginate(20)
+            ->appends(['filter' => $filter]);
+
+        $categories = Category::withCount([
+            'products' => fn($query) => $query->withFilters($filter)
+        ])->get();
 
         return Inertia::render('Products/List', [
-            'status'   => session('status'),
+            'filters' => $filter,
             'products' => $products,
+            'categories' => $categories,
         ]);
     }
 

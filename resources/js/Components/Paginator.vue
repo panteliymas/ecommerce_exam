@@ -2,6 +2,12 @@
 
 defineProps(['elements']);
 
+const emit = defineEmits(['pageChange']);
+
+const handleClick = (url) => {
+    emit('pageChange', url);
+};
+
 </script>
 
 <template>
@@ -18,14 +24,20 @@ defineProps(['elements']);
                 <a
                     v-else
                     class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border border-blue-400 rounded hover:bg-blue-700 focus:border-blue-800 hover:text-white"
-                    :href="elements.prev_page_url">
+                    :href="elements.prev_page_url"
+                    @click.prevent="handleClick(elements.prev_page_url)"
+                >
                     &lt;
                 </a>
             </div>
             <div v-for="(link, key) in elements.links.slice(1, elements.last_page + 1)" :key="key">
                 <a
                     class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border border-blue-400 rounded hover:bg-blue-700 focus:border-blue-800 hover:text-white"
-                    :class="{ 'bg-blue-500 text-white': link.active }" :href="link.url" v-html="link.label">
+                    :class="{ 'bg-blue-500 text-white': link.active }" 
+                    :href="link.url" 
+                    v-html="link.label"
+                    @click.prevent="handleClick(link.url)"
+                >
                 </a>
             </div>
             <div>
@@ -39,7 +51,9 @@ defineProps(['elements']);
                 <a
                     v-else
                     class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border border-blue-400 rounded hover:bg-blue-700 focus:border-blue-800 hover:text-white"
-                    :href="elements.next_page_url">
+                    :href="elements.next_page_url"
+                    @click.prevent="handleClick(elements.next_page_url)"
+                >
                     &gt;
                 </a>
             </div>

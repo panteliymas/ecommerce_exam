@@ -28,7 +28,9 @@ const addToCart = () => {
 
 <template>
     <div class="group relative">
-        <img :src="`${usePage().props.asset}/${props.product.photo}`" :alt="props.product.name" class="block h-auto shrink-0">
+        <a :href="route('products.product', props.product.id)" class="block">
+            <img :src="`${usePage().props.asset}/${props.product.photo}`" :alt="props.product.name" class="block h-auto shrink-0">
+        </a>
         <div class="text-md mt-4 flex justify-between">
             <div>
                 <h3 class="text-gray-700">
