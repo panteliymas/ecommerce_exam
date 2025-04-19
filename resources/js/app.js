@@ -6,13 +6,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import * as solidFAI from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-// for (const iconName in solidFAI) {
-//     if (iconName === 'fas') continue; // Don't add the style object itself
-//     library.add(solidFAI[iconName]);
-// }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

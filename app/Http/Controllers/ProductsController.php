@@ -41,15 +41,15 @@ class ProductsController extends Controller
     /**
      * Display product.
      */
-    public function product(Request $request, $id): InertiaResponse
+    public function product(Request $request, $id): InertiaResponse|RedirectResponse
     {
-        $product = Product::find($id);
+        $product = Product::with('categories')->find($id);
         if (!$product) {
-            return Redirect::route('products.catalog')->with('status', 'Product not found');
+            return Redirect::route('products.catalog')->with('error', 'Product not found');
         }
 
         $cart = CartManager::getCartFromCache($request->ip());
-        $is_in_cart = collect($cart)->where('id', $id)->first();
+        $is_in_cart = collect($cart)->where('id', $id)->count() > 0;
 
         return Inertia::render('Products/Product', [
             'product'    => $product,

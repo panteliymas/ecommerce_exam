@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -50,6 +50,18 @@ onMounted(() => {
 
 let cartOpened = ref(false);
 
+if ($page.props.flash.error) {
+    setTimeout(() => {
+        $page.props.flash.error = null
+    }, 10000)
+}
+
+if ($page.props.flash.message) {
+    setTimeout(() => {
+        $page.props.flash.message = null
+    }, 10000)
+}
+
 </script>
 
 <template>
@@ -80,6 +92,15 @@ let cartOpened = ref(false);
                     class="rounded-md px-3 py-2 text-black border-b-2 border-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] hover:border-black"
                 >
                     Register
+                </Link>
+            </template>
+
+            <template v-else-if="$page.props.auth.is_admin">
+                <Link
+                    :href="route('admin.dashboard')"
+                    class="rounded-md px-3 py-2 text-black border-b-2 border-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] hover:border-black"
+                >
+                    Admin
                 </Link>
             </template>
 
@@ -136,4 +157,10 @@ let cartOpened = ref(false);
             </Dropdown>
         </nav>
     </header>
+    <div class="max-w-8xl bg-red-200 text-red-900 border-1 border-red-500 rounded-xl m-4 py-4 px-6 text-md" v-if="$page.props.flash.error">
+        {{ $page.props.flash.error }}
+    </div>
+    <div class="max-w-8xl bg-green-200 text-green-900 border-1 border-green-500 rounded-xl m-4 py-4 px-6 text-md" v-if="$page.props.flash.message">
+        {{ $page.props.flash.message }}
+    </div>
 </template>

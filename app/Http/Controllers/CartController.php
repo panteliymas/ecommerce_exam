@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
 use App\Models\Product;
+use App\Models\Order;
 use App\Http\Managers\CartManager;
 
 use Auth;
@@ -56,7 +57,7 @@ class CartController extends Controller
 
         Cache::put($user_key . '_cart', base64_encode(json_encode($cart->toArray())), 60 * 24 * 30); // 30 days
         
-        return redirect()->back()->with('status', 'Product added to cart');
+        return redirect()->back()->with('message', 'Product added to cart');
     }
 
     /**
@@ -70,7 +71,7 @@ class CartController extends Controller
         if (Cache::has($user_key . '_cart')) {
             $cart = json_decode(base64_decode(Cache::get($user_key . '_cart')), true);
         } else {
-            return redirect()->back()->with('status', 'Cart is empty');
+            return redirect()->back()->with('error', 'Cart is empty');
         }
         $cart = collect($cart);
 
@@ -83,7 +84,7 @@ class CartController extends Controller
         
         Cache::put($user_key . '_cart', base64_encode(json_encode($cart->toArray())), 60 * 24 * 30); // 30 days
         
-        return redirect()->back()->with('status', 'Product removed from cart');
+        return redirect()->back()->with('message', 'Product removed from cart');
     }
 
     /**
@@ -104,21 +105,50 @@ class CartController extends Controller
      */
     public function checkout(Request $request)
     {
-        dd($request->all());
-
         $cart = $request->cart;
         if (empty($cart)) {
-            return redirect()->back()->with('status', 'Cart is empty');
+            return redirect()->back()->with('error', 'Cart is empty');
         }
         $cart = collect($cart);
 
         $delivery_info = $request->deliveryInfo;
         if (empty($delivery_info)) {
-            return redirect()->back()->with('status', 'Delivery info is empty');
+            return redirect()->back()->with('error', 'Delivery info is empty');
         }
         $delivery_info = collect($delivery_info);
 
+        $products = $cart->mapWithKeys(fn($prod) => [$prod['id'] => Product::find($prod['id'])]);
+
+        foreach ($cart as $product) {
+            $_product = $products[$product['id']];
+            if (!$_product) {
+                return back()->with('error', 'Product [' . $product['name'] . '] not found');
+            }
+            if ($product['quantity'] > $_product->stock) {
+                return back()->with('error', $_product->stock . ' left of product [' . $product['name'] . ']');
+            }
+            $_product->stock -= $product['quantity'];
+            $_product->save();
+        }
+
+        $order = new Order([
+            'user_id' => Auth::id(),
+            'delivery' => json_encode($delivery_info),
+            'total' => $cart->sum('total')
+        ]);
+
+        $order->save();
+        $products_to_order = [];
+        foreach ($cart as $_product) {
+            $products_to_order[] = ['product_id' => $_product['id'], 'order_id' => $order->getKey(), 'quantity' => $_product['quantity']];
+        }
+        $order->products()->sync($products_to_order);
+        $order->refresh();
+        $order->save();
+
         Cache::forget($request->ip() . '_cart');
         Cache::forget('user_' . Auth::id() . '_cart');
+
+        return redirect()->route('products.catalog')->with('message', 'Thanks for ordering from us.');
     }
 }

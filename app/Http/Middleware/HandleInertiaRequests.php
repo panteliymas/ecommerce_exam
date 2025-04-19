@@ -35,9 +35,14 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'is_admin' => $request->user() ? $request->user()->isAdmin() : false,
             ],
             'cart' => fn() => CartManager::getCartFromCache($request->ip()),
             'asset' => asset(''),
+            'flash' => [
+                'message' => fn () => $request->session()->get('message'),
+                'error'   => fn () => $request->session()->get('error'),
+            ],
         ];
     }
 }
